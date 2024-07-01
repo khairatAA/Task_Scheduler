@@ -88,7 +88,7 @@ const TaskLogs: React.FC = () => {
           <TableBody>
             {taskLogs?.map((log) => (
               <TableRow key={log.id}>
-                <TableCell>{log.task_name}</TableCell> {/* Display Task Name */}
+                <TableCell>{log.task_name}</TableCell>
                 <TableCell>
                   {new Date(log.execution_time).toLocaleString()}
                 </TableCell>

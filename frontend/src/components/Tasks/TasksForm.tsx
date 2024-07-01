@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-case-declarations */
 // src/components/TasksForm.tsx
-import React from "react";
+import React, { useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -20,7 +20,7 @@ import {
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../../api";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 interface TasksFormProps {
@@ -81,6 +81,7 @@ const schema = yup.object().shape({
 
 const TasksForm: React.FC<TasksFormProps> = ({ open, handleClose }) => {
   const queryClient = useQueryClient();
+  const [message, setMessage] = useState("");
 
   const {
     handleSubmit,
@@ -149,9 +150,9 @@ const TasksForm: React.FC<TasksFormProps> = ({ open, handleClose }) => {
     mutationFn: (newTask: any) => api.post(`tasks/create`, newTask),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks", userId] });
-      toast.success("Task created successfully");
-      handleClose();
-      reset();
+      setMessage("Task created successfully");
+      setTimeout(() => (handleClose(), reset()), 1000);
+      setMessage("");
     },
     onError: (error: any) => {
       toast.error(
@@ -175,13 +176,15 @@ const TasksForm: React.FC<TasksFormProps> = ({ open, handleClose }) => {
 
   return (
     <div>
-      <ToastContainer />
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Create New Task</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Please fill out the form below to create a new task.
           </DialogContentText>
+          {message && (
+            <span className=" text-green-500 font-bold mb-3">{message}</span>
+          )}
           <form onSubmit={handleSubmit(onSubmit)}>
             <TextField
               autoFocus
@@ -328,6 +331,7 @@ const TasksForm: React.FC<TasksFormProps> = ({ open, handleClose }) => {
           </form>
         </DialogContent>
       </Dialog>
+      {/* <ToastContainer /> */}
     </div>
   );
 };

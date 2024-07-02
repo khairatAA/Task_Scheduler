@@ -1,0 +1,8 @@
+version: '3'
+services:
+  server:
+    build: .
+    ports:
+      - "4173:4173"
+    environment:
+      - NODE_ENV=production

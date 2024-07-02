@@ -28,7 +28,7 @@ app.use("/tasks", taskRoutes);
 app.use("/taskslog", taskLogRoutes);
 
 database
-  .sync({})
+  .sync()
   .then(() => {
     console.log("Database is connected");
   })

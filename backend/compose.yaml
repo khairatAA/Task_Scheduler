@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    command: sh -c "ls -l ./config && npx sequelize-cli db:migrate --config ./config/config.js && npm run prod"
+    ports:
+      - "${PORT}:${PORT}"
+    environment:
+      - PORT=${PORT}
+      - APP_SECRET=${APP_SECRET}
+      - NODE_ENV=${NODE_ENV}
+      - PROD_PORT=${PROD_PORT}
+      - PROD_NAME=${PROD_NAME}
+      - PROD_USERNAME=${PROD_USERNAME}
+      - PROD_HOST=${PROD_HOST}
+      - PROD_PASSWORD=${PROD_PASSWORD}
+    depends_on:
+      - db
+    links:
+      - db
+
+  db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=${PROD_NAME}
+      - POSTGRES_USER=${PROD_USERNAME}
+      - POSTGRES_PASSWORD=${PROD_PASSWORD}
+    ports:
+      - "${PROD_PORT}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
